@@ -1,0 +1,29 @@
+{
+  "name": "bots",
+  "version": "1.0.0",
+  "description": "bots",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mr4tt/bots.git"
+  },
+  "keywords": [
+    "bot"
+  ],
+  "author": "rubee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mr4tt/bots/issues"
+  },
+  "homepage": "https://github.com/mr4tt/bots#readme",
+  "dependencies": {
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.33.0"
+  }
+}
