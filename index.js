@@ -1,7 +1,17 @@
 // Require the necessary discord.js classes
-import { Client, Events, GatewayIntentBits } from 'discord.js';
+// Collection is just better map i guess 
+const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 require('dotenv').config();
 
+// reads the commands directory and identify the command files
+const fs = require('node:fs');
+
+// path makes paths to access files and directories 
+const path = require('node:path');
+
+// ------------
+
+client.commands = new Collection();
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
