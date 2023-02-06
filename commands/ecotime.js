@@ -1,10 +1,12 @@
 const { SlashCommandBuilder } = require('discord.js');
 
+currentDate = Date();
+// if currentDate == 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('ping')
-		.setDescription('Replies with Pong!'),
+		.setName('is it ecotime?')
+		.setDescription('Tells you if it is time to do ecotime'),
 	async execute(interaction) {
-		await interaction.reply("<@281657106644467713>");
+		await interaction.reply(`${currentDate}`);
 	},
 };

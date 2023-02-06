@@ -1,6 +1,10 @@
 const { Events } = require('discord.js');
 
+// every / command is an interaction
+// you need to create a listener for the event
+
 module.exports = {
+    // name proper specifies which event this file is for
 	name: Events.InteractionCreate,
 	async execute(interaction) {
 		if (!interaction.isChatInputCommand()) return;
