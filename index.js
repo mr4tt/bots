@@ -17,6 +17,14 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 // constructs path to the events folder
 const eventsPath = path.join(__dirname, 'events');
 
+client.commands = new Collection();
+
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+for (const file of commandFiles) {
+    const command = require(`./commands/${file}`);
+    client.commands.set(command.data.name, command);
+}
+
 // readdirSync reads the path to the directory and returns an array of files, filter so u only returns js files 
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
