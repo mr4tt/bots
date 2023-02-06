@@ -1,11 +1,10 @@
-// getting the slashcommandbuilder class
 const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('IsEdBad?')
-		.setDescription('Answers the question'),
+		.setName('ping')
+		.setDescription('Replies with Pong!'),
 	async execute(interaction) {
-		await interaction.reply('Yes!');
+		await interaction.reply("<@281657106644467713>");
 	},
 };
