@@ -14,7 +14,8 @@ module.exports = {
 		// console.log(currentDate)
 		const currentDate = new Date();
 		// finding the number of days 
-		const days = Math.round((currentDate - ecoDate) / (1000 * 60 * 60 * 24));
+		const days = Math.floor((currentDate - ecoDate) / (1000 * 60 * 60 * 24));
+		console.log(days)
 		// ecotime is every 2 weeks
 		const ecotime = days % 14
 
