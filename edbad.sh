@@ -1,0 +1,10 @@
+ping http://w12.monkrus.ws/
+ping http://w13.monkrus.ws/
+ping http://w14.monkrus.ws/
+ping http://w15.monkrus.ws/
+ping http://w16.monkrus.ws/
+ping http://w17.monkrus.ws/
+ping http://w18.monkrus.ws/
+ping http://w19.monkrus.ws/
+ping http://w20.monkrus.ws/
+ping http://w21.monkrus.ws/
