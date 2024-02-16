@@ -1,6 +1,8 @@
-const { SlashCommandBuilder } = require('discord.js'); 
+import { SlashCommandBuilder, } from "@discordjs/builders";
+import { ChatInputCommandInteraction } from "discord.js";
+import { CommandType } from "..";
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('setavatar')
         .setDescription('Sets the bot\'s avatar')
@@ -10,9 +12,8 @@ module.exports = {
             // the description for the argument, shown to user when they 
             // start putting a value for the argument
             .setDescription('The image to set as the bot\'s avatar.')),
-    async execute(interaction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         // 'image' is the name I gave to the argument
-        //
         // true means this attachment is required so it will never be null
         // if it was false, then you would need to check if it was null first before
         // using it.
@@ -28,4 +29,4 @@ module.exports = {
             //.then(user => (interaction.reply("profile set")));
         await interaction.editReply("profile set");
     },
-};
+} as CommandType;

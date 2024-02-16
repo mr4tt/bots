@@ -13,7 +13,7 @@
   "keywords": [
     "bot"
   ],
-  "author": "rubee",
+  "author": "Mrat",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/mr4tt/bots/issues"
@@ -21,7 +21,8 @@
   "homepage": "https://github.com/mr4tt/bots#readme",
   "dependencies": {
     "discord.js": "^14.7.1",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "typescript": "^5.3.3"
   },
   "devDependencies": {
     "eslint": "^8.33.0"

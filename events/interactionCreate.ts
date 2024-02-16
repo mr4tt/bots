@@ -1,4 +1,6 @@
-const { Events } = require('discord.js');
+import { Events, Interaction } from 'discord.js';
+import { commands } from '..';
+
 
 // every / command is an interaction
 // you need to create a listener for the event
@@ -6,10 +8,10 @@ const { Events } = require('discord.js');
 module.exports = {
     // name proper specifies which event this file is for
 	name: Events.InteractionCreate,
-	async execute(interaction) {
+	async execute(interaction: Interaction) {
 		if (!interaction.isChatInputCommand()) return;
 
-		const command = interaction.client.commands.get(interaction.commandName);
+		const command = commands.get(interaction.commandName);
 
 		if (!command) {
 			console.error(`No command matching ${interaction.commandName} was found.`);
