@@ -12,7 +12,7 @@ import fs from 'node:fs';
 // path makes paths to access files and directories 
 import * as path from 'path';
 
-async function index(client: Client<boolean>, commands: Collection<string, CommandType>) {
+async function index(client: Client<boolean>, commands: Collection<string, CommandType>, cmdPath: string, eventsPath: string) {
 	// Set each command
 	const commandFiles = fs.readdirSync(cmdPath).filter(file => file.endsWith('.js'));
 	for (const file of commandFiles) {
@@ -23,10 +23,9 @@ async function index(client: Client<boolean>, commands: Collection<string, Comma
 	// readdirSync reads the path to the directory and returns an array of files, filter so u only returns js files 
 	const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
-	// for each event that matches a command, run the cmd 
+	// for each event that matches a command, run the cmd
 	for (const file of eventFiles) {
-		const filePath = path.join(eventsPath, file);
-		const event = require(filePath);
+		const event = await import(path.join(__dirname, "..", "out", "events", file)).then(obj => obj.default);
 		console.log(event);
 		// takes all args returned by the event, then calls  
 		if (event.once) {
@@ -50,9 +49,9 @@ async function index(client: Client<boolean>, commands: Collection<string, Comma
 	})();
 }
 
-export async function loadCommands() {
-	const commands: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
-	const cmdPath = path.join(__dirname, "..", "out", "commands");
+async function loadCommands(cmdPath: string) {
+	const commandsList: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
+	
 	// Grab all the command files from the commands directory you created earlier
 	const commandFiles = fs.readdirSync(cmdPath).filter(file => file.endsWith('.js'));
 	
@@ -60,28 +59,27 @@ export async function loadCommands() {
 	for (const file of commandFiles) {
 		console.log(await import(path.join(__dirname, "..", "out", "commands", file)));
 		const command = await import(path.join(__dirname, "..", "out", "commands", file)).then(obj => obj.default);
-		commands.push(command.data.toJSON());
+		commandsList.push(command.data.toJSON());
 	}
 	
 	// Construct and prepare an instance of the REST module
 	const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN!);
 
 	try {
-		console.log(`Started refreshing ${commands.length} application (/) commands.`);
-
+		console.log(`Started refreshing ${commandsList.length} application (/) commands.`);
 		// The put method is used to fully refresh all commands in the guild with the current set
 		// if test, then only update commands in test guild
 		if (process.argv.slice(2)[0] === "test") {
-			const data = await rest.put(
+			console.log("Entering test mode.");
+			await rest.put(
 				Routes.applicationGuildCommands(process.env.APP_ID!, process.env.GUILD_ID!),
-				{ body: commands },
+				{ body: commandsList },
 			);
-	
 		}
 		else {
-			const data = await rest.put(
+			await rest.put(
 				Routes.applicationCommands(process.env.APP_ID!),
-				{ body: commands },
+				{ body: commandsList },
 			);
 		}
 
@@ -90,18 +88,12 @@ export async function loadCommands() {
 		console.error(error);
 	}
 }
-
-// load commands 
-loadCommands();
-
-// Create a new client instance
+export const commands = new Collection<string, CommandType>();
 export const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-// path to the commands folder 
 const cmdPath = path.join(__dirname, "..", "out", "commands");
-// path to the events folder
 const eventsPath = path.join(__dirname, 'events');
 
-export const commands = new Collection<string, CommandType>();
-
-index(client, commands);
+// load commands 
+loadCommands(cmdPath).then(() => {
+	index(client, commands, cmdPath, eventsPath);
+});

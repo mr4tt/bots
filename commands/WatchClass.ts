@@ -8,15 +8,19 @@ export default {
     data: new SlashCommandBuilder()
     .setName('watchclass')
     .setDescription(`Input class to watch, get notified if empty seats. 
-    Alerts after seats fill up and a spot opens`),
+    Alerts after seats fill up and a spot opens`)
+    .addStringOption((arg) => arg.setName("course")
+        .setDescription("Name of course to watch")
+        .setRequired(true)),
 
     /**
      * @inheritDoc
      */
     async execute(interaction: ChatInputCommandInteraction) {
         const course = interaction.options.getString("course", true);
-        
+        console.log("course", course);
         const parsedCode = parseCourseSubjCode(course);
+        console.log(parsedCode);
         if (parsedCode.indexOf(" ") === -1) {
             await interaction.reply({
                 content: `Your input, \`${course}\`, is not correctly formatted. It should look like \`SUBJ XXX\`.`,

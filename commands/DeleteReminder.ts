@@ -6,7 +6,10 @@ import { CommandType } from "./utilities/Types";
 export default {
     data: new SlashCommandBuilder()
     .setName('deletereminder')
-    .setDescription( "Delete reminders you've previously set."),
+    .setDescription( "Delete reminders you've previously set.")
+    .addStringOption((arg) => arg.setName("delete_id")
+        .setDescription("The ID of the reminder you'd like to remove.")
+        .setRequired(true)),
 
     /**
      * @inheritDoc

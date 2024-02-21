@@ -1,7 +1,7 @@
 import { Client } from "discord.js";
 import { Events } from 'discord.js';
 
-module.exports = {
+export default {
     // name states which event this file is for
 	name: Events.ClientReady,
     // event should only run once 

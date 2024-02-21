@@ -6,6 +6,7 @@ import {
 import { log, stopFor } from "./Util";
 import { ScraperApiWrapper } from "./ScraperApiWrapper";
 import { client } from "../..";
+
 require('dotenv').config();
 
 type CourseList = { user_id: string, course: string, channel_id?: string, previously_open?: boolean; }[]

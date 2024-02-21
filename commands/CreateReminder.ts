@@ -6,7 +6,10 @@ import { CommandType } from "./utilities/Types";
 export default {
     data: new SlashCommandBuilder()
     .setName('createreminder')
-    .setDescription("Create a reminder."),
+    .setDescription("Create a reminder.")
+    .addStringOption((arg) => arg.setName("reminder_info")
+        .setDescription("Reminder Information")
+        .setRequired(true)),
     
     /**
      * @inheritDoc

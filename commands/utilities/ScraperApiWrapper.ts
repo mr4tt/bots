@@ -2,7 +2,6 @@ import axios, { AxiosInstance } from "axios";
 
 export type ScraperResponse<T> = T | { error: string; } | null;
 
-
 export interface WebRegSection {
     subj_course_id: string;
     section_id: string;
@@ -50,7 +49,6 @@ export interface ISearchQuery {
     end_min?: number;
     end_hr?: number;
 }
-
 
 export class ScraperApiWrapper {
     private static _instance: ScraperApiWrapper | null = null;

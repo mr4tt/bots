@@ -22,7 +22,7 @@
   "dependencies": {
     "@types/pg": "^8.11.0",
     "axios": "^1.6.7",
-    "discord.js": "^14.7.1",
+    "discord.js": "^14.14.1",
     "dotenv": "^16.0.3",
     "pg": "^8.11.3",
     "typescript": "^5.3.3"

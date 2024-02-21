@@ -7,7 +7,10 @@ import { CommandType } from "./utilities/Types";
 export default {
     data: new SlashCommandBuilder()
     .setName('deleteclass')
-    .setDescription("Remove a class from your watch list"),
+    .setDescription("Remove a class from your watch list")
+    .addStringOption((arg) => arg.setName("course")
+        .setDescription("Name of course you'd like to remove")
+        .setRequired(true)),
 
     /**
      * @inheritDoc

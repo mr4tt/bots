@@ -81,9 +81,10 @@ export function parseCourseSubjCode(code: string): string {
     let s = "";
     let i = 0;
     for (; i < code.length; i++) {
-        const numRegex = new RegExp('.+\\*.+');
         // Regex to see if it's a number
-        if (numRegex.test(code[i])) {
+        const numRegex = new RegExp('/^\d+$/');
+        
+        if (/^\d+$/.test(code[i])) {
             break;
         }
 
