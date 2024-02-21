@@ -70,5 +70,5 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
-  "include": ["./commands/*", "./events/*", "index.ts"]
+  "include": ["./commands/*", "./events/*", "index.ts", "deploy-commands.ts", "./commands/utilities/*", "commands/Ecotime.ts"]
 }
