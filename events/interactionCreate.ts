@@ -5,7 +5,7 @@ import { commands } from '..';
 // every / command is an interaction
 // you need to create a listener for the event
 
-module.exports = {
+export default {
     // name proper specifies which event this file is for
 	name: Events.InteractionCreate,
 	async execute(interaction: Interaction) {
