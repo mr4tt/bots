@@ -14,5 +14,7 @@ This Discord bot has these commands:
 3. `npm i` to download packages
 4. `npx tsc` to compile TS to JS into an out/ folder
 5. `node out/index.js` to start the bot 
-- note: this will both load the commands to Discord and start the bot in your Discord of choice 
+   - notes: 
+     - this will both load the commands to Discord and start the bot in your Discord of choice 
+     - if in *nix, may need to move .env to the out/ folder
 
