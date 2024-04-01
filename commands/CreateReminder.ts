@@ -92,7 +92,7 @@ export default {
                             new TextInputBuilder()
                                 .setStyle(TextInputStyle.Short)
                                 .setMaxLength(2)
-                                .setLabel("Minute (1-60)")
+                                .setLabel("Minute (0-59)")
                                 .setCustomId("minute")
                                 .setRequired(true),
                         ]
