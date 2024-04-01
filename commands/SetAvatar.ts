@@ -21,7 +21,6 @@ export default {
         if (!attachment.height) 
                 return;
         // url is the url to the image
-        // do something with it
         await interaction.deferReply()
 
         await interaction.client.user.setAvatar(attachment.url)

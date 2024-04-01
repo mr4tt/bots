@@ -5,11 +5,9 @@ import {
 } from "discord.js";
 import { log } from "./Util";
 import { client } from "../..";
-require('dotenv').config();
+import { searchUserType, searchIDType, searchTimeType } from "./Types"
 
-type searchUserType = { id: number, message: string, alert_time: Date; }[]
-type searchTimeType = { id: number, message: string, user_id: string, channel_id: string; }[]
-type searchIDType = { message: string, alert_time: Date }[]
+require('dotenv').config();
 
 export namespace PostgresReminder {
     const pool = new Pool({
