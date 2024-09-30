@@ -67,10 +67,14 @@ async function loadCommands(cmdPath: string) {
 
 	try {
 		console.log(`Started refreshing ${commandsList.length} application (/) commands.`);
-		// The put method is used to fully refresh all commands in the guild with the current set
-		// if test, then only update commands in test guild
+		
+		// if index is run with "test" as an arg, start test mode
+		// otherwise, start prod mode 
 		if (process.argv.slice(2)[0] === "test") {
 			console.log("Entering test mode.");
+
+			// The put method is used to fully refresh all commands in the guild with the current set
+			// if test, then only update commands in test guild
 			await rest.put(
 				Routes.applicationGuildCommands(process.env.APP_ID!, process.env.GUILD_ID!),
 				{ body: commandsList },
