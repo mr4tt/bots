@@ -156,20 +156,19 @@ export default {
           );
 
           try {
-            const date = new Date();
-
+            const currDate = new Date();
             const month =
               Number.parseInt(
                 modalSubmission.fields.getTextInputValue("month")
-              ) || date.getMonth() + 1;
+              ) || currDate.getMonth();
             const day =
               Number.parseInt(
                 modalSubmission.fields.getTextInputValue("day")
-              ) || date.getDate();
+              ) || currDate.getDate();
             const year =
               Number.parseInt(
                 modalSubmission.fields.getTextInputValue("year")
-              ) || date.getFullYear();
+              ) || currDate.getFullYear();
             const hour = Number.parseInt(
               modalSubmission.fields.getTextInputValue("hour")
             );
@@ -180,11 +179,7 @@ export default {
 
             await modalSubmission.deferUpdate();
 
-            date.setMonth(month - 1);
-            date.setDate(day);
-            date.setFullYear(year);
-            date.setHours(hour);
-            date.setMinutes(minute);
+            const date = new Date(year, month, day, hour, minute)
 
             let message;
             let color: ColorResolvable = "Green";
