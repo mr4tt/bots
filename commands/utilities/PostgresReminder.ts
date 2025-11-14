@@ -1,9 +1,11 @@
 import { Pool, QueryResult } from "pg";
 import {
+    ButtonBuilder,
+    ButtonStyle,
     EmbedBuilder,
     TextChannel,
 } from "discord.js";
-import { log } from "./Util";
+import { getActionRowsFromComponents, log } from "./Util";
 import { client } from "../..";
 import { searchUserType, searchIDType, searchTimeType } from "./Types"
 
@@ -18,26 +20,24 @@ export namespace PostgresReminder {
         database: process.env.DATABASE,
     });
 
-    
     /**
      * Create table in PostgreSQL to store alerts
      */
     export async function createAlertTable(): Promise<void> {
         try {
             const res = await pool.query(`
-                CREATE SCHEMA IF NOT EXISTS "rubot";
+								CREATE SCHEMA IF NOT EXISTS "rubot";
 
-                CREATE TABLE IF NOT EXISTS "rubot"."alert" (
-                    "id" SERIAL PRIMARY KEY,
-                    "user_id" text NOT NULL,
-                    "message" text NOT NULL,
-                    "alert_time" timestamp NOT NULL,
-                    "channel_id" text NOT NULL
+								CREATE TABLE IF NOT EXISTS "rubot"."alert" (
+										"id" SERIAL PRIMARY KEY,
+										"user_id" text NOT NULL,
+										"message" text NOT NULL,
+										"alert_time" timestamp NOT NULL,
+										"channel_id" text NOT NULL
                 );`
             );
             log(res, createAlertTable.name, "INFO");
-        }
-        catch (err) {
+        } catch (err) {
             log(err, createAlertTable.name, "ERROR");
         }
     }
@@ -46,15 +46,17 @@ export namespace PostgresReminder {
      * Search *future* alerts via user information
      * @param {string} query The user's Discord ID
      * @returns {Promise<searchUserType>} Object w/ serial id, time to alert, and alert message
-    */
+     */
     export async function searchByUser(query: string): Promise<searchUserType> {
         try {
-            const res = await pool.query("SELECT id, message, alert_time FROM rubot.alert WHERE user_id = $1 AND alert_time >= now();", [query]);
+            const res = await pool.query(
+                "SELECT id, message, alert_time FROM rubot.alert WHERE user_id = $1 AND alert_time >= now();",
+                [query]
+            );
             log(res.rows, searchByUser.name, "INFO");
 
             return res.rows;
-        }
-        catch (err) {
+        } catch (err) {
             log(err, searchByUser.name, "ERROR");
         }
 
@@ -63,17 +65,19 @@ export namespace PostgresReminder {
 
     /**
      * Search for future alerts via serial id
-     * @param {string | null} id The serial id of the alert 
+     * @param {string | null} id The serial id of the alert
      * @returns {Promise<searchIDType>} Object w/ time to alert and alert message
      */
     export async function searchByID(id: string | null): Promise<searchIDType> {
         try {
-            const res = await pool.query("SELECT message, alert_time FROM rubot.alert WHERE id = $1 AND alert_time >= now();", [id]);
+            const res = await pool.query(
+                "SELECT message, alert_time FROM rubot.alert WHERE id = $1 AND alert_time >= now();",
+                [id]
+            );
             log(res, searchByID.name, "INFO");
 
             return res.rows;
-        }
-        catch (err) {
+        } catch (err) {
             log(err, searchByID.name, "ERROR");
         }
 
@@ -88,19 +92,19 @@ export namespace PostgresReminder {
     export async function searchByDate(query: Date): Promise<searchTimeType> {
         try {
             const res = await pool.query(`
-            SELECT
-                id,  
-                message, 
-                user_id,
-                channel_id
-            FROM rubot.alert
-            WHERE alert_time >= date_trunc('minute', $1::timestamp) 
-            AND   alert_time < date_trunc('minute', $1::timestamp) + INTERVAL '1 minute';`,
-            [query]);
+                SELECT
+                    id,  
+                    message, 
+                    user_id,
+                    channel_id
+                FROM rubot.alert
+                WHERE alert_time >= date_trunc('minute', $1::timestamp) 
+                AND   alert_time < date_trunc('minute', $1::timestamp) + INTERVAL '1 minute';`,
+                [query]
+            );
 
             return res.rows;
-        }
-        catch (err) {
+        } catch (err) {
             log(err, searchByDate.name, "ERROR");
         }
 
@@ -114,13 +118,19 @@ export namespace PostgresReminder {
      * @param {Date} alert_time time to alert the user
      * @param {string} channel_id id of Discord channel to send in
      */
-    export async function insert(user: string, message: string | null, alert_time: Date, channel_id: string): Promise<void> {
+    export async function insert(
+        user: string,
+        message: string | null,
+        alert_time: Date,
+        channel_id: string
+    ): Promise<void> {
         try {
-            const res = await pool.query("INSERT INTO rubot.alert VALUES (DEFAULT, $1, $2, $3, $4);",
-                [user, message, alert_time, channel_id]);
+            const res = await pool.query(
+                "INSERT INTO rubot.alert VALUES (DEFAULT, $1, $2, $3, $4);",
+                [user, message, alert_time, channel_id]
+            );
             log(res, insert.name, "INFO");
-        }
-        catch (err) {
+        } catch (err) {
             log(err, insert.name, "ERROR");
         }
     }
@@ -139,14 +149,13 @@ export namespace PostgresReminder {
         try {
             const res = await pool.query("DROP TABLE IF EXISTS rubot.alert;");
             log(res, dropAlertTable.name, "INFO");
-        }
-        catch (err) {
+        } catch (err) {
             log(err, dropAlertTable.name, "ERROR");
         }
     }
 
     /**
-     * Deletes a reminder 
+     * Deletes a reminder
      * @param {string} id serial id of the reminder to be deleted
      * @returns {Promise<QueryResult>} The information about the request
      */
@@ -156,8 +165,7 @@ export namespace PostgresReminder {
             log(res, deleteRow.name, "INFO");
 
             return res;
-        }
-        catch (err) {
+        } catch (err) {
             log(err, deleteRow.name, "ERROR");
         }
         return {
@@ -170,7 +178,7 @@ export namespace PostgresReminder {
     }
 
     /**
-     * Every minute, search for alerts that need to be sent now. Send if found. 
+     * Every minute, search for alerts that need to be sent now. Send if found.
      */
     export function loop() {
         // call function every minute
@@ -178,24 +186,83 @@ export namespace PostgresReminder {
 
         setInterval(() => {
             // once you get the list of reminders, then create embed and send
-            searchByDate(new Date()).then(async reminders => {
+            searchByDate(new Date()).then(async (reminders) => {
                 // for each reminder found, we send an embed to remind the user
                 for (const reminder of reminders) {
-                    const channel: TextChannel = client.channels.cache.get(reminder.channel_id) as TextChannel;
+                    const channel: TextChannel = client.channels.cache.get(
+                        reminder.channel_id
+                    ) as TextChannel;
                     const user = client.users.cache.get(reminder.user_id);
 
                     const remindEmbed = new EmbedBuilder()
                         .setColor("DarkGreen")
                         .setTitle("Reminder!")
-                        .setDescription(`<@${reminder.user_id}>, your reminder: ${reminder.message}`)
+                        .setDescription(
+                            `<@${reminder.user_id}>, your reminder: ${reminder.message}\n
+														note: the snooze button will only be available for the next 5 minutes`
+                        )
                         .setTimestamp();
                     if (user) {
-                        remindEmbed.setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() });
+                        remindEmbed.setAuthor({
+                            name: user.tag,
+                            iconURL: user.displayAvatarURL(),
+                        });
                     }
-                    
-                    channel.send({
-                        content: "=======================================================\n" +
-                            `<@${reminder.user_id}>`, embeds: [remindEmbed]
+                    const uniqueId = `${Date.now()}_${user!.id}_${Math.random()}`;
+                    const reminderText = await channel.send({
+                        content:
+                            "=======================================================\n" +
+                            `<@${reminder.user_id}>`,
+                        embeds: [remindEmbed],
+                        components: getActionRowsFromComponents([
+                            new ButtonBuilder()
+                                .setLabel("Snooze for a hour?")
+                                .setCustomId(`${uniqueId}_hour`)
+                                .setStyle(ButtonStyle.Primary),
+                            new ButtonBuilder()
+                                .setLabel("Snooze for a day?")
+                                .setCustomId(`${uniqueId}_day`)
+                                .setStyle(ButtonStyle.Primary),
+                        ]),
+                    });
+
+                    const collector = reminderText.createMessageComponentCollector({
+                        filter: (i) => i.user.id === reminder.user_id,
+                        time: 5 * 60 * 1000, // expires after 5 min
+                    });
+
+                    collector.on("collect", async (interaction) => {
+                        await interaction.deferUpdate();
+
+                        let newDate = new Date();
+
+                        if (interaction.customId.endsWith("hour")) {
+                            newDate.setHours(newDate.getHours() + 1);
+                        } else {
+                            newDate.setDate(newDate.getDate() + 1);
+                        }
+
+                        PostgresReminder.insert(
+                            interaction.user.id,
+                            reminder.message,
+                            newDate,
+                            interaction.channel!.id
+                        );
+
+                        await reminderText.edit({
+                            content: `Will remind you <t:${Math.floor(
+                                newDate.getTime() / 1000
+                            )}:R>.`,
+                            components: [],
+                        });
+
+                        collector.stop("done");
+                    });
+
+                    collector.on("end", (_, reason) => {
+                        if (reason !== "done") {
+                            reminderText.edit({ components: [] });
+                        }
                     });
                 }
             });
