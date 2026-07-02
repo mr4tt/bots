@@ -160,7 +160,7 @@ export default {
                         const month =
                             Number.parseInt(
                                 modalSubmission.fields.getTextInputValue("month")
-                            ) || currDate.getMonth();
+                            ) || currDate.getMonth() + 1;
                         const day =
                             Number.parseInt(
                                 modalSubmission.fields.getTextInputValue("day")
@@ -179,7 +179,7 @@ export default {
 
                         await modalSubmission.deferUpdate();
 
-                        const date = new Date(year, month, day, hour, minute);
+                        const date = new Date(year, month - 1, day, hour, minute);
 
                         let message;
                         let color: ColorResolvable = "Green";
